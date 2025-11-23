@@ -1617,96 +1617,180 @@
         });
 
         // ==================== N8N WEBHOOK INTEGRATION ====================
-        // ⚠️ ВАЖНО: Замените на ваш реальный n8n webhook URL!
-        const N8N_WEBHOOK_URL = 'https://your-n8n-instance.com/webhook/safe-air';
-        
-        // Функция для формирования четкого JSON структуры для n8n
+        // Конфигурация N8N
+        // ВАЖНО: Замените на ваш реальный n8n webhook URL из шага 3 документации
+        const N8N_CONFIG = {
+            webhookUrl: localStorage.getItem('n8n_webhook_url') || 'https://your-n8n-instance.com/webhook/safe-air',
+            maxRetries: 3,
+            retryDelay: 1000, // ms
+            timeout: 10000, // ms
+            version: '1.0'
+        };
+
+        // Хранилище для локального сохранения при ошибке (для отладки и повтора)
+        class FormDataStorage {
+            constructor() {
+                this.storageKey = 'safe_air_form_data_draft';
+            }
+
+            save(formData) {
+                try {
+                    localStorage.setItem(this.storageKey, JSON.stringify({
+                        data: formData,
+                        timestamp: new Date().toISOString()
+                    }));
+                    console.log('💾 Данные формы сохранены локально');
+                } catch (e) {
+                    console.warn('Не удалось сохранить данные локально:', e);
+                }
+            }
+
+            load() {
+                try {
+                    const stored = localStorage.getItem(this.storageKey);
+                    return stored ? JSON.parse(stored) : null;
+                } catch (e) {
+                    console.warn('Не удалось загрузить данные:', e);
+                    return null;
+                }
+            }
+
+            clear() {
+                localStorage.removeItem(this.storageKey);
+            }
+        }
+
+        const formStorage = new FormDataStorage();
+
+        // Функция для формирования структурированного JSON для n8n
         function buildFormJSON(formData) {
             const timestamp = new Date().toISOString();
             const now = new Date();
-            
+
             return {
-                // Версия API
-                api_version: "1.0",
-                
+                // Версия API для совместимости
+                api_version: N8N_CONFIG.version,
+
                 // Контактная информация клиента
                 contact: {
                     name: formData.name,
                     phone: formData.phone,
-                    email: formData.email,
+                    email: formData.email || null,
                     city: formData.city
                 },
-                
-                // Данные запроса
+
+                // Данные запроса/заявки
                 request: {
                     client_type: formData.clientType,
                     service_type: formData.service,
-                    equipment_count: parseInt(formData.units) || 1,
-                    message: formData.message || null
+                    equipment_count: Math.max(parseInt(formData.units) || 1, 1),
+                    message: formData.message || null,
+                    urgency: formData.urgency || 'normal'
                 },
-                
-                // Метаданные
+
+                // Метаданные для аналитики и отладки
                 metadata: {
-                    form_id: 'consultation-form',
+                    form_id: 'consultation-form-v1',
                     source: 'SAFE AIR Landing Page',
                     user_agent: navigator.userAgent,
                     timestamp: timestamp,
                     timestamp_unix: Math.floor(now.getTime() / 1000),
                     date_formatted: now.toLocaleDateString('ru-RU'),
-                    time_formatted: now.toLocaleTimeString('ru-RU')
+                    time_formatted: now.toLocaleTimeString('ru-RU'),
+                    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                    page_url: window.location.href,
+                    referrer: document.referrer || 'direct'
                 }
             };
         }
-        
-        // Функция для отправки данных в n8n
-        async function sendFormToN8N(jsonPayload) {
+
+        // Функция для отправки данных в n8n с поддержкой retry
+        async function sendFormToN8N(jsonPayload, retryCount = 0) {
             try {
-                // Логируем JSON перед отправкой (для отладки)
-                console.log('📤 Отправляем JSON в n8n:', JSON.stringify(jsonPayload, null, 2));
-                
-                const response = await fetch(N8N_WEBHOOK_URL, {
+                console.log(`📤 Попытка отправки ${retryCount + 1}/${N8N_CONFIG.maxRetries + 1}...`);
+                console.log('📊 JSON для отправки:', JSON.stringify(jsonPayload, null, 2));
+
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), N8N_CONFIG.timeout);
+
+                const response = await fetch(N8N_CONFIG.webhookUrl, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
                     },
-                    body: JSON.stringify(jsonPayload)
+                    body: JSON.stringify(jsonPayload),
+                    signal: controller.signal
                 });
 
+                clearTimeout(timeoutId);
+
                 if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                 }
 
-                const responseData = await response.json();
-                console.log('✅ Успешный ответ от n8n:', responseData);
+                const responseData = response.status === 204 ? { success: true } : await response.json().catch(() => ({ success: true }));
+                console.log('✅ Успешно отправлено в n8n:', responseData);
+
+                // Очищаем локальное хранилище при успехе
+                formStorage.clear();
+
                 return responseData;
             } catch (error) {
-                console.error('❌ N8N Error:', error);
+                console.error(`❌ Ошибка отправки (попытка ${retryCount + 1}):`, error.message);
+
+                // Retry логика для сетевых ошибок
+                if (retryCount < N8N_CONFIG.maxRetries && (error.name === 'AbortError' || error instanceof TypeError)) {
+                    const delay = N8N_CONFIG.retryDelay * Math.pow(2, retryCount);
+                    console.log(`⏳ Повтор через ${delay}ms...`);
+
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    return sendFormToN8N(jsonPayload, retryCount + 1);
+                }
+
                 throw error;
             }
         }
 
-        // Показать сообщение
-        function showMessage(message, type = 'success') {
-            // Удалить старое сообщение если есть
+        // Показать сообщение с автоматическим скрытием
+        function showMessage(message, type = 'success', duration = 5000) {
             const oldMessage = document.querySelector('.form-message');
             if (oldMessage) oldMessage.remove();
 
             const messageDiv = document.createElement('div');
             messageDiv.className = `form-message form-message-${type}`;
-            messageDiv.textContent = message;
-            
+            messageDiv.innerHTML = message; // Поддерживаем HTML
+
             const form = document.getElementById('consultationForm');
             form.parentNode.insertBefore(messageDiv, form);
 
-            if (type === 'success') {
-                setTimeout(() => messageDiv.remove(), 5000);
+            if (type === 'success' && duration) {
+                setTimeout(() => {
+                    messageDiv.style.opacity = '0';
+                    messageDiv.style.transition = 'opacity 0.3s';
+                    setTimeout(() => messageDiv.remove(), 300);
+                }, duration);
             }
+
+            // Скролл к сообщению
+            messageDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
 
         // Валидация email
         function isValidEmail(email) {
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return emailRegex.test(email);
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+
+        // Форматирование номера телефона
+        function formatPhone(phone) {
+            return phone.replace(/\D/g, '').slice(-11);
+        }
+
+        // Валидация номера телефона (русский номер)
+        function isValidPhone(phone) {
+            const cleanPhone = phone.replace(/\D/g, '');
+            return cleanPhone.length >= 10;
         }
 
         // Form submission с n8n интеграцией
@@ -1719,78 +1803,103 @@
                 const originalText = submitButton.textContent;
 
                 try {
-                    // Собираем исходные данные формы
+                    // Сбор данных формы
                     const rawFormData = {
                         name: document.getElementById('name').value.trim(),
                         phone: document.getElementById('phone').value.trim(),
                         email: document.getElementById('email').value.trim(),
-                        clientType: document.querySelector('input[name="client-type"]:checked').value,
+                        clientType: document.querySelector('input[name="client-type"]:checked')?.value || 'family',
                         service: document.getElementById('service').value,
                         units: document.getElementById('units').value || '1',
                         city: document.getElementById('city').value.trim(),
-                        message: document.getElementById('message').value.trim()
+                        message: document.getElementById('message').value.trim(),
+                        urgency: 'normal'
                     };
 
                     // Валидация
                     if (!rawFormData.name || rawFormData.name.length < 2) {
-                        showMessage('❌ Пожалуйста, укажите ваше имя (минимум 2 символа)', 'error');
+                        showMessage('❌ Укажите имя (минимум 2 символа)');
                         return;
                     }
 
-                    if (!rawFormData.phone || rawFormData.phone.length < 10) {
-                        showMessage('❌ Пожалуйста, укажите корректный номер телефона', 'error');
+                    if (!isValidPhone(rawFormData.phone)) {
+                        showMessage('❌ Укажите корректный номер телефона (минимум 10 цифр)');
                         return;
                     }
 
                     if (rawFormData.email && !isValidEmail(rawFormData.email)) {
-                        showMessage('❌ Пожалуйста, укажите корректный email адрес', 'error');
+                        showMessage('❌ Неверный формат email');
                         return;
                     }
 
                     if (!rawFormData.city || rawFormData.city.length < 2) {
-                        showMessage('❌ Пожалуйста, укажите город', 'error');
+                        showMessage('❌ Укажите город');
                         return;
                     }
+
+                    if (!rawFormData.service) {
+                        showMessage('❌ Выберите услугу');
+                        return;
+                    }
+
+                    // Сохраняем данные локально перед отправкой
+                    formStorage.save(rawFormData);
 
                     // UI: Loading state
                     submitButton.disabled = true;
                     submitButton.textContent = '⏳ Отправляем заявку...';
+                    submitButton.style.opacity = '0.7';
 
-                    // Формируем четкий JSON структуру для n8n
+                    // Проверка конфигурации
+                    if (N8N_CONFIG.webhookUrl.includes('your-n8n-instance')) {
+                        showMessage('⚠️ <strong>Ошибка конфигурации:</strong> N8N webhook URL не установлен. Свяжитесь с администратором.');
+                        submitButton.disabled = false;
+                        submitButton.textContent = originalText;
+                        submitButton.style.opacity = '1';
+                        return;
+                    }
+
+                    // Формируем JSON для n8n
                     const jsonPayload = buildFormJSON(rawFormData);
 
-                    // Отправляем в n8n
+                    // Отправляем в n8n с retry
                     const result = await sendFormToN8N(jsonPayload);
 
-                    // Success!
-                    showMessage('✅ Спасибо за заявку! Мы скоро свяжемся с вами.', 'success');
+                    // Успех
+                    showMessage('✅ <strong>Спасибо за заявку!</strong><br>Наш специалист скоро свяжется с вами по телефону<br>или email', 'success', 6000);
+
+                    // Сброс формы
                     this.reset();
 
                     // UI: Reset button
                     submitButton.disabled = false;
                     submitButton.textContent = originalText;
-
-                    // Scroll to message
-                    document.querySelector('.form-message')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    submitButton.style.opacity = '1';
 
                 } catch (error) {
-                    console.error('Form submission error:', error);
-                    
-                    // Check if N8N webhook URL is not configured
-                    if (N8N_WEBHOOK_URL.includes('your-n8n-instance')) {
-                        showMessage('⚠️ Ошибка: N8N webhook не настроен. Свяжитесь с администратором.', 'error');
+                    console.error('❌ Ошибка при отправке формы:', error);
+
+                    let errorMessage = '❌ <strong>Ошибка отправки</strong><br>';
+
+                    if (error.message.includes('HTTP')) {
+                        errorMessage += 'Ошибка сервера. Попробуйте через Telegram или позвоните.';
+                    } else if (error.name === 'AbortError') {
+                        errorMessage += 'Истекло время ожидания. Проверьте интернет-соединение.';
                     } else {
-                        showMessage('❌ Ошибка отправки. Попробуйте через Telegram бота или позвоните нам.', 'error');
+                        errorMessage += 'Не удалось отправить заявку. Пожалуйста, используйте Telegram бота @SafeAir_helpbot или позвоните 8-800-555-01-23';
                     }
+
+                    showMessage(errorMessage, 'error', 8000);
 
                     // UI: Reset button
                     submitButton.disabled = false;
                     submitButton.textContent = originalText;
+                    submitButton.style.opacity = '1';
                 }
             });
         }
 
-        // Стили для сообщений (добавляем динамически)
+        // Стили для сообщений
         const style = document.createElement('style');
         style.textContent = `
             .form-message {
@@ -1800,18 +1909,27 @@
                 font-weight: 600;
                 font-size: 16px;
                 animation: slideInDown 0.4s ease-out;
+                line-height: 1.6;
             }
 
             .form-message-success {
                 background: linear-gradient(135deg, #00CC88, #00B870);
                 color: white;
                 border-left: 4px solid #008855;
+                box-shadow: 0 4px 15px rgba(0, 204, 136, 0.3);
             }
 
             .form-message-error {
                 background: linear-gradient(135deg, #FF3366, #FF1F4D);
                 color: white;
                 border-left: 4px solid #CC0033;
+                box-shadow: 0 4px 15px rgba(255, 51, 102, 0.3);
+            }
+
+            .form-message strong {
+                display: block;
+                margin-bottom: 4px;
+                font-size: 17px;
             }
 
             @keyframes slideInDown {
@@ -1826,4 +1944,32 @@
             }
 
             .submit-button:disabled {
-                opaci
+                opacity: 0.7;
+                cursor: not-allowed;
+            }
+
+            .submit-button:hover:not(:disabled) {
+                opacity: 1;
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Функция для установки webhook URL через консоль (для разработчиков)
+        window.setN8NWebhook = function(url) {
+            localStorage.setItem('n8n_webhook_url', url);
+            N8N_CONFIG.webhookUrl = url;
+            console.log('✅ N8N Webhook URL установлен:', url);
+        };
+
+        // Проверка конфигурации при загрузке страницы
+        console.log('%c🔧 SAFE AIR N8N Integration v1.0', 'color: #0066FF; font-size: 16px; font-weight: bold;');
+        console.log('%cДля установки webhook URL используйте:', 'color: #6B7280; font-size: 14px;');
+        console.log('%cwindow.setN8NWebhook("https://your-n8n.com/webhook/safe-air")', 'color: #00CC88; font-size: 12px; font-family: monospace;');
+        if (N8N_CONFIG.webhookUrl.includes('your-n8n-instance')) {
+            console.warn('%c⚠️ ВНИМАНИЕ: N8N webhook URL не установлен!', 'color: #FF6B6B; font-size: 14px; font-weight: bold;');
+        } else {
+            console.log('%c✅ N8N Webhook URL:', 'color: #00CC88; font-size: 12px;', N8N_CONFIG.webhookUrl);
+        }
+    </script>
+</body>
+</html>
