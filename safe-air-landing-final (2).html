@@ -1,0 +1,1829 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAFE AIR — Дышите безопасно! Новый стандарт климатических услуг</title>
+    <meta name="description" content="SAFE AIR — технологическая платформа для обучения и подбора специалистов по кондиционированию с гарантией качества. Защитите здоровье своей семьи!">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #0066FF;
+            --primary-dark: #0052CC;
+            --secondary: #00D4FF;
+            --success: #00CC88;
+            --success-dark: #009966;
+            --danger: #FF6B6B;
+            --warning: #FFB800;
+            --info: #6366F1;
+            --dark: #1a1a2e;
+            --dark-bg: #0a0a14;
+            --gray: #6B7280;
+            --gray-light: #F3F4F6;
+            --gray-lighter: #F9FAFB;
+            --white: #FFFFFF;
+            --border: #E5E7EB;
+            --border-light: #F3F4F6;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            overflow-x: hidden;
+        }
+
+        /* Navigation & Logo */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 0;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--dark);
+        }
+
+        .logo-symbol {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: var(--primary);
+            position: relative;
+        }
+
+        .logo-symbol svg {
+            width: 40px;
+            height: 40px;
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-cta {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 10px 24px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 102, 255, 0.4);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: var(--white);
+            padding: 150px 20px 80px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            margin-top: 0;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="2" fill="white" opacity="0.1"/></svg>') repeat;
+            animation: moveBackground 20s linear infinite;
+        }
+
+        @keyframes moveBackground {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(100px, 100px); }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: clamp(32px, 6vw, 56px);
+            font-weight: 800;
+            margin-bottom: 24px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .hero-subtitle {
+            font-size: clamp(18px, 3vw, 24px);
+            margin-bottom: 40px;
+            opacity: 0.95;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: var(--white);
+            color: var(--primary-dark);
+            padding: 16px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .cta-button-secondary {
+            background: transparent;
+            color: var(--white);
+            border: 2px solid var(--white);
+            margin-left: 16px;
+        }
+
+        .cta-button-secondary:hover {
+            background: var(--white);
+            color: var(--primary);
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-block;
+            padding: 14px 36px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 30px;
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 35px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3);
+            letter-spacing: 0.5px;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        /* Problem Section */
+        .problem {
+            padding: 80px 20px;
+            background: var(--gray-lighter);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .problem::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: movePattern 20s linear infinite;
+        }
+
+        @keyframes movePattern {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(50px, 50px) rotate(360deg); }
+        }
+
+        .problem h2 {
+            font-size: clamp(32px, 5vw, 42px);
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--dark);
+            position: relative;
+            z-index: 1;
+        }
+
+        .problem-intro {
+            text-align: center;
+            font-size: 20px;
+            color: var(--dark);
+            margin-bottom: 60px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            position: relative;
+            z-index: 1;
+            font-weight: 500;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat-card {
+            background: var(--white);
+            padding: 40px 30px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--stat-color-1), var(--stat-color-2));
+        }
+
+        .stat-card:nth-child(1) {
+            --stat-color-1: #FF6B6B;
+            --stat-color-2: #FF5252;
+        }
+
+        .stat-card:nth-child(2) {
+            --stat-color-1: #A29BFE;
+            --stat-color-2: #6C5CE7;
+        }
+
+        .stat-card:nth-child(3) {
+            --stat-color-1: #FFB800;
+            --stat-color-2: #FFA500;
+        }
+
+        .stat-card:nth-child(4) {
+            --stat-color-1: var(--secondary);
+            --stat-color-2: var(--primary);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        }
+
+        .stat-icon {
+            font-size: 56px;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .stat-number {
+            font-size: 48px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--stat-color-1), var(--stat-color-2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .stat-text {
+            font-size: 18px;
+            color: #636e72;
+            line-height: 1.6;
+            font-weight: 500;
+        }
+
+        /* Solution Section */
+        .solution {
+            padding: 80px 20px;
+            background: var(--white);
+        }
+
+        .solution h2 {
+            font-size: clamp(32px, 5vw, 42px);
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--success);
+        }
+
+        .solution-intro {
+            text-align: center;
+            font-size: 20px;
+            color: var(--gray);
+            margin-bottom: 60px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-top: 60px;
+        }
+
+        .feature-card {
+            text-align: center;
+            padding: 40px 30px;
+            border-radius: 20px;
+            background: #F0F9FF;
+            border: 2px solid #E0F2FE;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--white);
+            border-color: transparent;
+            box-shadow: 0 20px 40px rgba(0,102,255,0.2);
+        }
+
+        .feature-card:hover .feature-title {
+            color: var(--white);
+        }
+
+        .feature-card:hover .feature-text {
+            color: rgba(255,255,255,0.9);
+        }
+
+        .feature-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .feature-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--dark);
+        }
+
+        .feature-text {
+            font-size: 16px;
+            color: var(--gray);
+            line-height: 1.8;
+        }
+
+        /* How It Works */
+        .how-it-works {
+            padding: 80px 20px;
+            background: var(--gray-lighter);
+        }
+
+        .how-it-works h2 {
+            font-size: clamp(32px, 5vw, 42px);
+            text-align: center;
+            margin-bottom: 60px;
+            color: var(--dark);
+        }
+
+        .steps {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .step {
+            display: flex;
+            align-items: flex-start;
+            gap: 30px;
+            background: var(--white);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .step-number {
+            flex-shrink: 0;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: 800;
+        }
+
+        .step-content h3 {
+            font-size: 24px;
+            margin-bottom: 12px;
+            color: var(--dark);
+        }
+
+        .step-content p {
+            font-size: 16px;
+            color: var(--gray);
+            line-height: 1.8;
+        }
+
+        /* Benefits */
+        .benefits {
+            padding: 80px 20px;
+            background: var(--white);
+        }
+
+        .benefits h2 {
+            font-size: clamp(32px, 5vw, 42px);
+            text-align: center;
+            margin-bottom: 60px;
+            color: var(--dark);
+        }
+
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .benefit-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+            padding: 30px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--white);
+            border-radius: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .benefit-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,102,255,0.2);
+        }
+
+        .benefit-item:hover .benefit-check {
+            color: var(--white);
+        }
+
+        .benefit-item:hover strong {
+            color: var(--white);
+        }
+
+        .benefit-check {
+            font-size: 32px;
+            color: var(--white);
+            flex-shrink: 0;
+        }
+
+        .benefit-text {
+            font-size: 16px;
+            line-height: 1.6;
+            color: var(--white);
+        }
+
+        /* Target Audience */
+        .audience {
+            padding: 80px 20px;
+            background: var(--dark-bg);
+            color: var(--white);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .audience::before {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0, 102, 255, 0.2), transparent);
+            top: -250px;
+            right: -250px;
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        .audience::after {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0, 204, 136, 0.2), transparent);
+            bottom: -200px;
+            left: -200px;
+            animation: pulse 6s ease-in-out infinite;
+            animation-delay: 2s;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.2); opacity: 0.5; }
+        }
+
+        .audience h2 {
+            font-size: clamp(32px, 5vw, 42px);
+            text-align: center;
+            margin-bottom: 60px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .audience-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .audience-card {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            padding: 40px 30px;
+            border-radius: 20px;
+            border: 2px solid rgba(255,255,255,0.1);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .audience-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--card-gradient);
+            transition: height 0.4s ease;
+        }
+
+        .audience-card:nth-child(1) {
+            --card-gradient: linear-gradient(90deg, #FF6B6B, #FF5252);
+        }
+
+        .audience-card:nth-child(2) {
+            --card-gradient: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+
+        .audience-card:nth-child(3) {
+            --card-gradient: linear-gradient(90deg, var(--success), var(--success-dark));
+        }
+
+        .audience-card:hover {
+            background: rgba(255,255,255,0.1);
+            transform: translateY(-10px);
+            border-color: rgba(255,255,255,0.3);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+        }
+
+        .audience-card:hover::before {
+            height: 100%;
+            opacity: 0.1;
+        }
+
+        .audience-card-icon {
+            font-size: 56px;
+            margin: 0 auto 20px;
+            display: block;
+            text-align: center;
+            filter: drop-shadow(0 0 20px rgba(255,255,255,0.3));
+        }
+
+        .audience-card h3 {
+            font-size: 26px;
+            margin-bottom: 24px;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .audience-card:nth-child(1) h3 {
+            color: #FF6B6B;
+        }
+
+        .audience-card:nth-child(2) h3 {
+            color: var(--secondary);
+        }
+
+        .audience-card:nth-child(3) h3 {
+            color: var(--success);
+        }
+
+        .audience-card ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .audience-card li {
+            padding: 12px 0;
+            padding-left: 35px;
+            position: relative;
+            font-size: 16px;
+            opacity: 0.9;
+            line-height: 1.6;
+            transition: all 0.3s ease;
+        }
+
+        .audience-card li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--success);
+            font-weight: bold;
+            font-size: 20px;
+            width: 24px;
+            height: 24px;
+            background: rgba(0, 204, 136, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .audience-card:hover li {
+            opacity: 1;
+            padding-left: 40px;
+        }
+
+        /* Training Section */
+        .training {
+            padding: 80px 20px;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, #003d99 100%);
+            color: var(--white);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .training::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="2" fill="white" opacity="0.08"/></svg>') repeat;
+            animation: moveBackground 20s linear infinite;
+        }
+
+        .training h2 {
+            font-size: clamp(32px, 5vw, 42px);
+            text-align: center;
+            margin-bottom: 60px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .training-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .training-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            padding: 50px 40px;
+            border-radius: 20px;
+            border: 2px solid rgba(255,255,255,0.2);
+            margin-bottom: 40px;
+        }
+
+        .training-card h3 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .training-card-subtitle {
+            font-size: 18px;
+            margin-bottom: 30px;
+            opacity: 0.9;
+            font-weight: 600;
+            color: #B3D9FF;
+        }
+
+        .training-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .training-item {
+            background: rgba(255,255,255,0.05);
+            padding: 25px;
+            border-radius: 15px;
+            border-left: 4px solid #00D4FF;
+        }
+
+        .training-item h4 {
+            font-size: 18px;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .training-item p {
+            font-size: 15px;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        .training-cta {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .training-button {
+            display: inline-block;
+            background: var(--white);
+            color: var(--primary-dark);
+            padding: 16px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+
+        .training-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.3);
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 100px 20px;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, #003d99 100%);
+            color: var(--white);
+            text-align: center;
+        }
+
+        .cta-section h2 {
+            font-size: clamp(32px, 5vw, 48px);
+            margin-bottom: 24px;
+        }
+
+        .cta-section p {
+            font-size: 20px;
+            margin-bottom: 40px;
+            opacity: 0.95;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark-bg);
+            color: rgba(255,255,255,0.7);
+            padding: 60px 20px 30px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-section h3 {
+            color: var(--white);
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-section a {
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: var(--white);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 30px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .social-link {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            background: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        /* Questionnaire */
+        .questionnaire {
+            padding: 80px 20px;
+            background: var(--gray-lighter);
+        }
+
+        .questionnaire h2 {
+            font-size: clamp(32px, 5vw, 42px);
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--dark);
+        }
+
+        .questionnaire-intro {
+            text-align: center;
+            font-size: 18px;
+            color: var(--gray);
+            margin-bottom: 60px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .questionnaire-form {
+            max-width: 700px;
+            margin: 0 auto;
+            background: var(--white);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        .form-group {
+            margin-bottom: 30px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 10px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(0, 102, 255, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .radio-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 12px;
+        }
+
+        .radio-option {
+            flex: 1;
+            min-width: 180px;
+        }
+
+        .radio-option input[type="radio"] {
+            display: none;
+        }
+
+        .radio-option label {
+            display: block;
+            padding: 12px 16px;
+            background: var(--white);
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.2s ease, background-color 0.2s ease;
+            font-weight: 500;
+            font-size: 14px;
+            color: var(--dark);
+        }
+
+        .radio-option input[type="radio"]:checked + label {
+            background: var(--primary);
+            color: var(--white);
+            border-color: var(--primary);
+        }
+
+        .submit-button {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--primary-dark), #003d99);
+            color: var(--white);
+            border: none;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .submit-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .form-note {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: var(--gray);
+        }
+
+        .telegram-option {
+            margin-top: 30px;
+            padding: 30px;
+            background: linear-gradient(135deg, #54a0ff, #00d2d3);
+            border-radius: 15px;
+            text-align: center;
+            color: var(--white);
+        }
+
+        .telegram-option h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .telegram-option p {
+            margin-bottom: 20px;
+            opacity: 0.9;
+        }
+
+        .telegram-button {
+            display: inline-block;
+            background: var(--white);
+            color: #54a0ff;
+            padding: 12px 30px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .telegram-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+
+        .telegram-icon {
+            font-size: 20px;
+            margin-right: 8px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero {
+                padding: 80px 20px 60px;
+            }
+
+            .cta-button-secondary {
+                margin-left: 0;
+                margin-top: 16px;
+                display: block;
+            }
+
+            .step {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .step-number {
+                margin: 0 auto;
+            }
+
+            .benefit-item {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .benefit-check {
+                margin: 0 auto;
+            }
+
+            .audience-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .audience-card {
+                text-align: center;
+            }
+
+            .audience-card-icon {
+                margin: 0 auto 20px;
+            }
+
+            .training-card {
+                padding: 30px 20px;
+            }
+        }
+
+        /* Smooth Scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-container">
+            <a href="#" class="logo">
+                <div class="logo-symbol">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <polygon points="50,20 80,70 20,70" fill="none" stroke="#4facfe" stroke-width="4"/>
+                        <line x1="30" y1="50" x2="70" y2="50" stroke="#4facfe" stroke-width="4"/>
+                    </svg>
+                </div>
+                <span class="logo-text">SAFE AIR</span>
+            </a>
+            <a href="#questionnaire" class="nav-cta">Получить консультацию</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="badge">⚡ Технологическая революция в климатических услугах</div>
+            <h1>SAFE AIR — Дышите безопасно!</h1>
+            <p class="hero-subtitle">
+                Первая в России платформа, которая объединяет профессиональное обучение специалистов, 
+                AI-подбор мастеров и гарантию качества для вашего здоровья
+            </p>
+            <div>
+                <a href="#solution" class="cta-button">Узнать больше</a>
+                <a href="#questionnaire" class="cta-button cta-button-secondary">Получить консультацию</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Problem Section -->
+    <section class="problem">
+        <div class="container">
+            <h2>⚠️ Проблема, которую игнорировать опасно</h2>
+            <p class="problem-intro">
+                Кондиционеры в каждом доме и офисе могут быть источником серьезной угрозы для здоровья
+            </p>
+            <div class="stats-grid">
+                <div class="stat-card fade-in-up">
+                    <span class="stat-icon">🦠</span>
+                    <div class="stat-number">70%</div>
+                    <div class="stat-text">кондиционеров содержат опасные бактерии и плесень</div>
+                </div>
+                <div class="stat-card fade-in-up" style="animation-delay: 0.1s;">
+                    <span class="stat-icon">👨‍🔧</span>
+                    <div class="stat-number">92%</div>
+                    <div class="stat-text">специалистов не имеют профессиональной сертификации</div>
+                </div>
+                <div class="stat-card fade-in-up" style="animation-delay: 0.2s;">
+                    <span class="stat-icon">🤧</span>
+                    <div class="stat-number">34%</div>
+                    <div class="stat-text">аллергиков реагируют на споры из климатических систем</div>
+                </div>
+                <div class="stat-card fade-in-up" style="animation-delay: 0.3s;">
+                    <span class="stat-icon">⏳</span>
+                    <div class="stat-number">3-5 часов</div>
+                    <div class="stat-text">уходит на поиск надежного специалиста</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Solution Section -->
+    <section class="solution" id="solution">
+        <div class="container">
+            <h2>✅ SAFE AIR — комплексное решение</h2>
+            <p class="solution-intro">
+                Мы создали технологическую экосистему, которая решает все проблемы отрасли одновременно
+            </p>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🎓</div>
+                    <h3 class="feature-title">Обучение и сертификация</h3>
+                    <p class="feature-text">
+                        Многоуровневая система подготовки специалистов с практической аттестацией на учебных стендах
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🤖</div>
+                    <h3 class="feature-title">AI-подбор мастеров</h3>
+                    <p class="feature-text">
+                        Умный алгоритм подбирает специалиста под вашу задачу за 15 минут с учетом квалификации и отзывов
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🛡️</div>
+                    <h3 class="feature-title">Гарантия качества</h3>
+                    <p class="feature-text">
+                        Фото/видео контроль каждого этапа работы и сезонная гарантия на все виды обслуживания
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3 class="feature-title">Цифровая платформа</h3>
+                    <p class="feature-text">
+                        Мобильное приложение для отслеживания заказа в реальном времени и полная история обслуживания
+                    </p>
+                    <p style="margin-top: 16px; font-size: 14px; color: #f39c12; font-weight: 600;">
+                        🚧 В разработке
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💰</div>
+                    <h3 class="feature-title">Прозрачные цены</h3>
+                    <p class="feature-text">
+                        Фиксированная стоимость без скрытых доплат и экономия до 50% по сравнению с рынком
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⏰</div>
+                    <h3 class="feature-title">Круглосуточно</h3>
+                    <p class="feature-text">
+                        Поддержка 24/7 и выезд специалиста в течение 2 часов при срочном заказе
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="how-it-works">
+        <div class="container">
+            <h2>Как это работает?</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Оставьте заявку</h3>
+                        <p>Опишите проблему через приложение, сайт или по телефону. Это займет 30 секунд</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Получите подбор специалистов</h3>
+                        <p>AI-алгоритм подберет 3 подходящих мастера с фото, отзывами и рейтингом за 2 минуты</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Выберите время</h3>
+                        <p>Забронируйте удобное время — мастер приедет в течение 2 часов или в назначенное время</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h3>Контролируйте процесс</h3>
+                        <p>Получайте фотоотчеты каждого этапа работы и отслеживайте геолокацию мастера</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">5</div>
+                    <div class="step-content">
+                        <h3>Оплатите после выполнения</h3>
+                        <p>Проверьте результат, подпишите акт и оплатите только когда довольны работой</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits -->
+    <section class="benefits">
+        <div class="container">
+            <h2>Почему выбирают SAFE AIR</h2>
+            <p style="text-align: center; font-size: 18px; color: #6B7280; margin-bottom: 50px; max-width: 900px; margin-left: auto; margin-right: auto; line-height: 1.8;">
+                Обучение, проверка и гарантия качества — всё в одном месте. Доверие и безопасность в каждом заказе.
+            </p>
+            <div class="benefits-grid">
+                <div class="benefit-item">
+                    <div class="benefit-check">🔒</div>
+                    <div class="benefit-text">
+                        <strong>Проверенные специалисты</strong>
+                        <div style="margin-top: 8px; font-size: 14px; color: rgba(255,255,255,0.9);">Сертификация и обучение<br>Фотоверификация при каждом заказе</div>
+                    </div>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-check">📊</div>
+                    <div class="benefit-text">
+                        <strong>Полная прозрачность</strong>
+                        <div style="margin-top: 8px; font-size: 14px; color: rgba(255,255,255,0.9);">Рейтинги и отзывы<br>Квалификация мастера и фото этапов</div>
+                    </div>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-check">💪</div>
+                    <div class="benefit-text">
+                        <strong>Гарантия качества</strong>
+                        <div style="margin-top: 8px; font-size: 14px; color: rgba(255,255,255,0.9);">Сезонная гарантия<br>3–6 месяцев на все работы</div>
+                    </div>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-check">⏰</div>
+                    <div class="benefit-text">
+                        <strong>Быстро и надёжно</strong>
+                        <div style="margin-top: 8px; font-size: 14px; color: rgba(255,255,255,0.9);">Подбор мастера за 15 минут<br>Фиксированные рыночные цены</div>
+                    </div>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-check">🏥</div>
+                    <div class="benefit-text">
+                        <strong>Здоровье и комфорт</strong>
+                        <div style="margin-top: 8px; font-size: 14px; color: rgba(255,255,255,0.9);">Стандарты СанПиН<br>Профилактика респираторных проблем</div>
+                    </div>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-check">📱</div>
+                    <div class="benefit-text">
+                        <strong>Всё в приложении</strong>
+                        <div style="margin-top: 8px; font-size: 14px; color: rgba(255,255,255,0.9);">История обслуживаний<br>Напоминания о ТО и онлайн-контроль</div>
+                    </div>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-check">🎓</div>
+                    <div class="benefit-text">
+                        <strong>Поддержка индустрии</strong>
+                        <div style="margin-top: 8px; font-size: 14px; color: rgba(255,255,255,0.9);">Развитие стандартов<br>Обучение специалистов</div>
+                    </div>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-check">🌍</div>
+                    <div class="benefit-text">
+                        <strong>Для всей России</strong>
+                        <div style="margin-top: 8px; font-size: 14px; color: rgba(255,255,255,0.9);">Начали с Москвы<br>Расширяемся в федеральные города</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Target Audience (Clients only) -->
+    <section class="audience">
+        <div class="container">
+            <h2>SAFE AIR для каждого</h2>
+            <div class="audience-grid">
+                <div class="audience-card">
+                    <span class="audience-card-icon">🏠</span>
+                    <h3>ДЛЯ ЧАСТНЫХ ЛИЦ</h3>
+                    <ul>
+                        <li>Проверенные специалисты с сертификацией SAFE AIR</li>
+                        <li>Сезонная гарантия 3–6 месяцев на все работы</li>
+                        <li>Прозрачные цены — никаких сюрпризов</li>
+                        <li>Подбор мастера за 15 минут</li>
+                    </ul>
+                </div>
+                <div class="audience-card">
+                    <span class="audience-card-icon">🏢</span>
+                    <h3>ДЛЯ КОМПАНИЙ И БИЗНЕСА</h3>
+                    <ul>
+                        <li>Снижение затрат на обслуживание до 30%</li>
+                        <li>Предсказуемый бюджет на весь период</li>
+                        <li>Единый договор на все объекты</li>
+                        <li>Круглосуточная поддержка 24/7</li>
+                        <li>Портал управления контрактами и отчётность по всем работам</li>
+                    </ul>
+                </div>
+                <div class="audience-card">
+                    <span class="audience-card-icon">🏛</span>
+                    <h3>ДЛЯ ГОСУДАРСТВЕННЫХ И БЮДЖЕТНЫХ ОРГАНИЗАЦИЙ</h3>
+                    <ul>
+                        <li>Полное соответствие 44-ФЗ и 223-ФЗ</li>
+                        <li>Экономия бюджета на 25-40%</li>
+                        <li>Все необходимые лицензии и допуски</li>
+                        <li>Юридическая безопасность и полный пакет документов</li>
+                        <li>Долгосрочные контракты с фиксированной стоимостью</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Training Section for Specialists -->
+    <section class="training">
+        <div class="container">
+            <h2>🎓 Подготовка профессионалов климатических услуг</h2>
+            <div class="training-content">
+                <div class="training-card">
+                    <h3>Бесплатное профессиональное обучение*</h3>
+                    <p class="training-card-subtitle">*количество мест ограничено</p>
+                    <div class="training-list">
+                        <div class="training-item">
+                            <h4>📚 Комплексная программа</h4>
+                            <p>От основ до продвинутых техник обслуживания и ремонта кондиционеров всех типов</p>
+                        </div>
+                        <div class="training-item">
+                            <h4>🏆 Сертификация</h4>
+                            <p>Получите официальный сертификат SAFE AIR и включение в реестр специалистов</p>
+                        </div>
+                        <div class="training-item">
+                            <h4>💰 Гарантированный доход</h4>
+                            <p>От 80 000 ₽/месяц благодаря постоянному потоку заказов на платформе</p>
+                        </div>
+                        <div class="training-item">
+                            <h4>🛠️ Оборудование и инструменты</h4>
+                            <p>IT-экипировка, современные приборы и инструменты для работы предоставляются</p>
+                        </div>
+                        <div class="training-item">
+                            <h4>📈 Карьерный рост</h4>
+                            <p>Развитие навыков, прохождение уровней мастерства и увеличение заработка</p>
+                        </div>
+                        <div class="training-item">
+                            <h4>🌍 Федеральная сеть</h4>
+                            <p>Доступ к заказам по всей России с поддержкой расширения в другие регионы</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="training-cta">
+                <a href="https://t.me/SafeAIR_masterbot" target="_blank" class="training-button">✈️ Зарегистрироваться на обучение в Telegram</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Questionnaire Section -->
+    <section class="questionnaire" id="questionnaire">
+        <div class="container">
+            <h2>Получите бесплатную консультацию</h2>
+            <p class="questionnaire-intro">
+                Ответьте на несколько вопросов, и наш специалист подберет оптимальное решение для вас
+            </p>
+            
+            <form class="questionnaire-form" id="consultationForm">
+                <div class="form-group">
+                    <label for="name">Ваше имя *</label>
+                    <input type="text" id="name" name="name" required placeholder="Введите ваше имя">
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Телефон *</label>
+                    <input type="tel" id="phone" name="phone" required placeholder="+7 (___) ___-__-__">
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="your@email.com">
+                </div>
+
+                <div class="form-group">
+                    <label>Тип клиента *</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="type-family" name="client-type" value="family" required>
+                            <label for="type-family">Частное лицо</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="type-business" name="client-type" value="business">
+                            <label for="type-business">Представитель компании</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="type-public" name="client-type" value="public">
+                            <label for="type-public">Представитель гос. или бюджетной организации</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="service">Какая услуга вас интересует? *</label>
+                    <select id="service" name="service" required>
+                        <option value="">Выберите услугу</option>
+                        <option value="maintenance">Техническое обслуживание</option>
+                        <option value="repair">Ремонт кондиционера</option>
+                        <option value="installation">Установка новой системы</option>
+                        <option value="diagnostics">Диагностика</option>
+                        <option value="cleaning">Чистка и дезинфекция</option>
+                        <option value="consultation">Консультация</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="units">Количество блоков кондиционирования</label>
+                    <input type="number" id="units" name="units" min="1" placeholder="Например: 1">
+                </div>
+
+                <div class="form-group">
+                    <label for="city">Город *</label>
+                    <input type="text" id="city" name="city" required placeholder="Москва">
+                </div>
+
+                <div class="form-group">
+                    <label for="message">Дополнительная информация</label>
+                    <textarea id="message" name="message" placeholder="Опишите вашу ситуацию или задайте вопрос..."></textarea>
+                </div>
+
+                <button type="submit" class="submit-button">Отправить заявку</button>
+
+                <p class="form-note">
+                    Нажимая кнопку, вы соглашаетесь с политикой конфиденциальности и обработкой персональных данных
+                </p>
+            </form>
+
+            <div class="telegram-option">
+                <h3>💬 Или оставьте заявку через Telegram</h3>
+                <p>Быстро, удобно и без заполнения форм</p>
+                <a href="https://t.me/SafeAir_helpbot" target="_blank" class="telegram-button">
+                    <span class="telegram-icon">✈️</span>
+                    Открыть бота @SafeAir_helpbot
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section" id="cta">
+        <div class="container">
+            <h2>Начните дышать безопасно уже сегодня!</h2>
+            <p>Первая консультация и диагностика — бесплатно</p>
+            <div>
+                <a href="tel:88005550123" class="cta-button">Позвонить: 8-800-555-01-23</a>
+                <a href="https://t.me/SafeAir_helpbot" target="_blank" class="cta-button cta-button-secondary">
+                    ✈️ Telegram бот
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>О компании</h3>
+                    <ul>
+                        <li><a href="#">О нас</a></li>
+                        <li><a href="#">Наша миссия</a></li>
+                        <li><a href="#">Команда</a></li>
+                        <li><a href="#">Вакансии</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Услуги</h3>
+                    <ul>
+                        <li><a href="#">Для частных лиц</a></li>
+                        <li><a href="#">Для бизнеса</a></li>
+                        <li><a href="#">Для специалистов</a></li>
+                        <li><a href="#">Обучение</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Поддержка</h3>
+                    <ul>
+                        <li><a href="#">Часто задаваемые вопросы</a></li>
+                        <li><a href="#">Контакты</a></li>
+                        <li><a href="#">Политика конфиденциальности</a></li>
+                        <li><a href="#">Условия использования</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Контакты</h3>
+                    <p>Телефон: 8-800-555-01-23</p>
+                    <p>Email: <a href="/cdn-cgi/l/email-protection#e68f888089a695878083878f94c89493"><span class="__cf_email__" data-cfemail="61080f070e21120007040008134f1314">[email&#160;protected]</span></a></p>
+                    <p>Адрес: Москва, Россия</p>
+                    <div class="social-links">
+                        <a href="#" class="social-link">VK</a>
+                        <a href="#" class="social-link">TG</a>
+                        <a href="#" class="social-link">YT</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 SAFE AIR. Все права защищены. Дышите безопасно!</p>
+            </div>
+        </div>
+    </footer>
+
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+        // Smooth scroll animation for links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Fade in animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('fade-in-up');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.stat-card, .feature-card, .step, .benefit-item').forEach(el => {
+            observer.observe(el);
+        });
+
+        // ==================== N8N WEBHOOK INTEGRATION ====================
+        // ⚠️ ВАЖНО: Замените на ваш реальный n8n webhook URL!
+        const N8N_WEBHOOK_URL = 'https://your-n8n-instance.com/webhook/safe-air';
+        
+        // Функция для формирования четкого JSON структуры для n8n
+        function buildFormJSON(formData) {
+            const timestamp = new Date().toISOString();
+            const now = new Date();
+            
+            return {
+                // Версия API
+                api_version: "1.0",
+                
+                // Контактная информация клиента
+                contact: {
+                    name: formData.name,
+                    phone: formData.phone,
+                    email: formData.email,
+                    city: formData.city
+                },
+                
+                // Данные запроса
+                request: {
+                    client_type: formData.clientType,
+                    service_type: formData.service,
+                    equipment_count: parseInt(formData.units) || 1,
+                    message: formData.message || null
+                },
+                
+                // Метаданные
+                metadata: {
+                    form_id: 'consultation-form',
+                    source: 'SAFE AIR Landing Page',
+                    user_agent: navigator.userAgent,
+                    timestamp: timestamp,
+                    timestamp_unix: Math.floor(now.getTime() / 1000),
+                    date_formatted: now.toLocaleDateString('ru-RU'),
+                    time_formatted: now.toLocaleTimeString('ru-RU')
+                }
+            };
+        }
+        
+        // Функция для отправки данных в n8n
+        async function sendFormToN8N(jsonPayload) {
+            try {
+                // Логируем JSON перед отправкой (для отладки)
+                console.log('📤 Отправляем JSON в n8n:', JSON.stringify(jsonPayload, null, 2));
+                
+                const response = await fetch(N8N_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(jsonPayload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const responseData = await response.json();
+                console.log('✅ Успешный ответ от n8n:', responseData);
+                return responseData;
+            } catch (error) {
+                console.error('❌ N8N Error:', error);
+                throw error;
+            }
+        }
+
+        // Показать сообщение
+        function showMessage(message, type = 'success') {
+            // Удалить старое сообщение если есть
+            const oldMessage = document.querySelector('.form-message');
+            if (oldMessage) oldMessage.remove();
+
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `form-message form-message-${type}`;
+            messageDiv.textContent = message;
+            
+            const form = document.getElementById('consultationForm');
+            form.parentNode.insertBefore(messageDiv, form);
+
+            if (type === 'success') {
+                setTimeout(() => messageDiv.remove(), 5000);
+            }
+        }
+
+        // Валидация email
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        // Form submission с n8n интеграцией
+        const form = document.getElementById('consultationForm');
+        if (form) {
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                const submitButton = this.querySelector('.submit-button');
+                const originalText = submitButton.textContent;
+
+                try {
+                    // Собираем исходные данные формы
+                    const rawFormData = {
+                        name: document.getElementById('name').value.trim(),
+                        phone: document.getElementById('phone').value.trim(),
+                        email: document.getElementById('email').value.trim(),
+                        clientType: document.querySelector('input[name="client-type"]:checked').value,
+                        service: document.getElementById('service').value,
+                        units: document.getElementById('units').value || '1',
+                        city: document.getElementById('city').value.trim(),
+                        message: document.getElementById('message').value.trim()
+                    };
+
+                    // Валидация
+                    if (!rawFormData.name || rawFormData.name.length < 2) {
+                        showMessage('❌ Пожалуйста, укажите ваше имя (минимум 2 символа)', 'error');
+                        return;
+                    }
+
+                    if (!rawFormData.phone || rawFormData.phone.length < 10) {
+                        showMessage('❌ Пожалуйста, укажите корректный номер телефона', 'error');
+                        return;
+                    }
+
+                    if (rawFormData.email && !isValidEmail(rawFormData.email)) {
+                        showMessage('❌ Пожалуйста, укажите корректный email адрес', 'error');
+                        return;
+                    }
+
+                    if (!rawFormData.city || rawFormData.city.length < 2) {
+                        showMessage('❌ Пожалуйста, укажите город', 'error');
+                        return;
+                    }
+
+                    // UI: Loading state
+                    submitButton.disabled = true;
+                    submitButton.textContent = '⏳ Отправляем заявку...';
+
+                    // Формируем четкий JSON структуру для n8n
+                    const jsonPayload = buildFormJSON(rawFormData);
+
+                    // Отправляем в n8n
+                    const result = await sendFormToN8N(jsonPayload);
+
+                    // Success!
+                    showMessage('✅ Спасибо за заявку! Мы скоро свяжемся с вами.', 'success');
+                    this.reset();
+
+                    // UI: Reset button
+                    submitButton.disabled = false;
+                    submitButton.textContent = originalText;
+
+                    // Scroll to message
+                    document.querySelector('.form-message')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                } catch (error) {
+                    console.error('Form submission error:', error);
+                    
+                    // Check if N8N webhook URL is not configured
+                    if (N8N_WEBHOOK_URL.includes('your-n8n-instance')) {
+                        showMessage('⚠️ Ошибка: N8N webhook не настроен. Свяжитесь с администратором.', 'error');
+                    } else {
+                        showMessage('❌ Ошибка отправки. Попробуйте через Telegram бота или позвоните нам.', 'error');
+                    }
+
+                    // UI: Reset button
+                    submitButton.disabled = false;
+                    submitButton.textContent = originalText;
+                }
+            });
+        }
+
+        // Стили для сообщений (добавляем динамически)
+        const style = document.createElement('style');
+        style.textContent = `
+            .form-message {
+                padding: 16px 20px;
+                border-radius: 12px;
+                margin-bottom: 20px;
+                font-weight: 600;
+                font-size: 16px;
+                animation: slideInDown 0.4s ease-out;
+            }
+
+            .form-message-success {
+                background: linear-gradient(135deg, #00CC88, #00B870);
+                color: white;
+                border-left: 4px solid #008855;
+            }
+
+            .form-message-error {
+                background: linear-gradient(135deg, #FF3366, #FF1F4D);
+                color: white;
+                border-left: 4px solid #CC0033;
+            }
+
+            @keyframes slideInDown {
+                from {
+                    opacity: 0;
+                    transform: translateY(-20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .submit-button:disabled {
+                opaci
